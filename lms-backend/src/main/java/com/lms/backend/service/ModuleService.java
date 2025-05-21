@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.lms.backend.entity.Course;
-import com.lms.backend.entity.CourseModule;
+import com.lms.backend.entity.Module;
 import com.lms.backend.repository.CourseRepository;
 import com.lms.backend.repository.ModuleRepository;
 
@@ -21,25 +21,25 @@ public class ModuleService {
 		this.courseRepository = courseRepository;
 	}
 	
-	public List<CourseModule> getAllModules() {
-        return (List<CourseModule>) moduleRepository.findAll();
+	public List<Module> getAllModules() {
+        return (List<Module>) moduleRepository.findAll();
     }
 	
-	public CourseModule createModule(CourseModule module,Integer courseId) {
+	public Module createModule(Module module,Integer courseId) {
 		Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 		module.setCourse(course);
 		return moduleRepository.save(module);
     }
 	
-	public CourseModule updateModule(Integer id, CourseModule updateModule) {
-	    Optional<CourseModule> optionalModule = moduleRepository.findById(id);
+	public Module updateModule(Integer id, Module updateModule) {
+	    Optional<Module> optionalModule = moduleRepository.findById(id);
 	    
 	    if (optionalModule.isEmpty()) {
 	        return null;
 	    }
 
-	    CourseModule existingModule = optionalModule.get();
+	    Module existingModule = optionalModule.get();
 	    existingModule.setName(updateModule.getName());
 	    existingModule.setDescription(updateModule.getDescription());
 
@@ -50,10 +50,10 @@ public class ModuleService {
         moduleRepository.deleteById(id);
     }
 
-	public List<CourseModule> findByCourseId(Integer courseId) {
+	public List<Module> findByCourseId(Integer courseId) {
 		return moduleRepository.findByCourseId(courseId);
 	}
-	public List<CourseModule> getModulesByCourseId(Integer courseId) {
+	public List<Module> getModulesByCourseId(Integer courseId) {
 	    return moduleRepository.findByCourseId(courseId);
 	}
 

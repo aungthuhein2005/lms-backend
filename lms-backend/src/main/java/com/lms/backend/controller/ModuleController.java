@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lms.backend.entity.CourseModule;
+import com.lms.backend.entity.Module;
 import com.lms.backend.repository.ModuleRepository;
 import com.lms.backend.service.ModuleService;
 
@@ -30,7 +30,7 @@ public class ModuleController {
 	}
 	
 	@PostMapping("/courses/{courseid}")
-	public CourseModule createModule(@RequestBody CourseModule module, 
+	public Module createModule(@RequestBody Module module, 
 	                                 @PathVariable("courseid") Integer courseId) {
 	    return moduleService.createModule(module, courseId);
 	}
@@ -43,12 +43,12 @@ public class ModuleController {
 	
 	@PutMapping("/update/{id}")
 	@CrossOrigin(origins = "http://localhost:3000")
-	public CourseModule updateModule(@PathVariable Integer id, @RequestBody CourseModule module) {
+	public Module updateModule(@PathVariable Integer id, @RequestBody Module module) {
 	    return moduleService.updateModule(id, module);
 	}
 
 	@GetMapping("/courses/{courseid}")
-	public List<CourseModule> getModulesByCourseId(@PathVariable("courseid") Integer courseId) {
+	public List<Module> getModulesByCourseId(@PathVariable("courseid") Integer courseId) {
 	    return moduleService.getModulesByCourseId(courseId);
 	}
 }
