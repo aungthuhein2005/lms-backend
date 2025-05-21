@@ -1,0 +1,44 @@
+package com.lms.backend.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import com.lms.backend.entity.Class;
+import com.lms.backend.repository.ClassRepository;
+
+@Service
+public class ClassService {
+  
+  private final ClassRepository classRepository;
+
+  public ClassService(ClassRepository classRepository) {
+    super();
+    this.classRepository = classRepository;
+  }
+  
+  public List<Class> getAllClasses(){
+    return (List<Class>) classRepository.findAll();
+  }
+  
+  public Optional<Class> getClassById(Integer id){
+    return classRepository.findById(id);
+  }
+  
+  public Optional<Class> getClassByName(String name){
+    return classRepository.findByName(name);
+  }
+  
+  public Class createClass(Class classData) {
+    return classRepository.save(classData);
+  }
+  
+  public Class updateClass(Class classData) {
+    return classRepository.save(classData);
+  }
+  
+  public void deleteClass(Integer id) {
+    classRepository.deleteById(id);
+  }
+
+}

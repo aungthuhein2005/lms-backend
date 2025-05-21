@@ -90,18 +90,10 @@
     <scope>runtime</scope>
 </dependency>
 
-<<<<<<< HEAD
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
 </dependency>
-=======
-		<dependency>
-			<groupId>com.hostmdy</groupId>
-			<artifactId>bookstore</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
->>>>>>> branch 'hanny' of https://github.com/aungthuhein2005/lms-backend.git
 	</dependencies>
 
 	<build> 

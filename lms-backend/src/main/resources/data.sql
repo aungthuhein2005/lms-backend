@@ -14,3 +14,6 @@ INSERT INTO students (id, user_id, deleted)
 VALUES
 (1, 1, false),
 (2, 2, false);
+
+INSERT INTO course (title, description) VALUES ('Course 1', 'Description 1');
+INSERT INTO course (title, description) VALUES ('Course 2', 'Description 2');
