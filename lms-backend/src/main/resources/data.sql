@@ -15,5 +15,23 @@ VALUES
 (1, 1, false),
 (2, 2, false);
 
-INSERT INTO course (title, description) VALUES ('Course 1', 'Description 1');
-INSERT INTO course (title, description) VALUES ('Course 2', 'Description 2');
+-- Insert into Course table
+INSERT INTO course (id, title, description) VALUES 
+(1, 'Java Programming', 'Learn core and advanced Java concepts.'),
+(2, 'Web Development', 'HTML, CSS, JavaScript, and modern frameworks.');
+
+-- Insert into Module table
+INSERT INTO module (id, name, description, exam_id, assignment_id, course_id) VALUES 
+(1, 'Java Basics', 'Covers basic syntax and OOP.', 101, 201, 1),
+(2, 'Advanced Java', 'Threads, Streams, and Collections.', 102, 202, 1),
+(3, 'Frontend Basics', 'HTML and CSS introduction.', 103, 203, 2),
+(4, 'JavaScript', 'DOM, ES6, and event handling.', 104, 204, 2);
+
+-- Insert into Lesson table
+INSERT INTO lesson (id, title, media, exam_id, assignment_id, module_id) VALUES 
+(1, 'Introduction to Java', 'video1.mp4', 101, 201, 1),
+(2, 'OOP Concepts', 'video2.mp4', 101, 201, 1),
+(3, 'Working with Threads', 'video3.mp4', 102, 202, 2),
+(4, 'HTML Structure', 'video4.mp4', 103, 203, 3),
+(5, 'CSS Styling', 'video5.mp4', 103, 203, 3),
+(6, 'DOM Manipulation', 'video6.mp4', 104, 204, 4);
