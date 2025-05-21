@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.lms.backend.entity.Course;
-import com.lms.backend.entity.CourseModule;
+import com.lms.backend.entity.Module;
 import com.lms.backend.repository.CourseRepository;
 import com.lms.backend.repository.ModuleRepository;
 import com.lms.backend.service.CourseService;
@@ -61,7 +61,7 @@ public class CourseController {
 	}
 	
 	@GetMapping("/{courseId}/modules")
-	List<CourseModule> getAllModule(@PathVariable Integer courseId){
+	List<Module> getAllModule(@PathVariable Integer courseId){
 		return moduleService.findByCourseId(courseId);
 	}
 	
