@@ -31,7 +31,7 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Lesson not found"));
         lesson.setTitle(updatedlesson.getTitle());
-        lesson.setMedia(updatedlesson.getMedia());
+        lesson.setMediaURL(updatedlesson.getMediaURL());
         return lessonRepository.save(lesson);
     }
 

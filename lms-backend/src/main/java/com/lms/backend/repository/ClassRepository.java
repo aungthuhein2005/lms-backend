@@ -1,11 +1,11 @@
 package com.lms.backend.repository;
 
 import java.util.Optional;
-import com.lms.backend.entity.Class;
+import com.lms.backend.entity.ClassEntity;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ClassRepository extends CrudRepository<Class, Integer> {
+public interface ClassRepository extends CrudRepository<ClassEntity, Integer> {
   
-  Optional<Class> findByName(String name);
+  Optional<ClassEntity> findByName(String name);
 
 }

@@ -1,7 +1,10 @@
 package com.lms.backend.controller;
 
+import com.lms.backend.dto.UserRequest;
 import com.lms.backend.entity.User;
 import com.lms.backend.service.*;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,20 +40,36 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userService.createUser(user);
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
+        try {
+        	User createdUser = userService.createUser(userRequest);
+            return ResponseEntity.ok(createdUser);
+        }catch(Exception e) {
+        	e.printStackTrace();
+        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message","An unexpected error occurred.")); 
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<?> checkUserDependencies(@PathVariable int id) {
+        boolean hasStudent = userService.hasStudentReference(id);
+        if (hasStudent) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+            		.body(Map.of("message","User is referenced as a student. Do you want to delete all related data?"));
+        }
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(Map.of("message","User deleted successfully."));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
-        User updatedUser = userService.createUser(user);
-        return ResponseEntity.ok(updatedUser);
+    @DeleteMapping("/{id}/force")
+    public ResponseEntity<?> forceDelete(@PathVariable int id) {
+        userService.forceDeleteUserAndStudent(id);
+        return ResponseEntity.ok(Map.of("message","User and related student data deleted successfully."));
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
+//        User updatedUser = userService.createUser(user);
+//        return ResponseEntity.ok(updatedUser);
+//    }
 }

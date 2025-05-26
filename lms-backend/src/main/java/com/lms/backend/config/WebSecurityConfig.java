@@ -7,37 +7,42 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.*;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 public class WebSecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    	 http
-         .cors().and()
-         .csrf().disable()
-         .headers(headers -> headers.frameOptions().disable())
-         .authorizeHttpRequests(auth -> auth
-             .requestMatchers("/h2-console/**").permitAll()
-             .anyRequest().permitAll() // Or `.authenticated()` if you want protection
-         );
+	 @Bean
+	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	        http
+	            // Correct way to configure CORS in Spring Security 6+
+	            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Link to your CorsConfigurationSource bean
+	            // OR if you want to use the default configuration defined by a CorsFilter bean or WebMvcConfigurer:
+	            // .cors(Customizer.withDefaults())
 
-        return http.build();
-    }
+	            .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity (configure properly for production!)
+	            .headers(headers -> headers.frameOptions().disable()) // Allow H2 Console to load in a frame
+	            .authorizeHttpRequests(auth -> auth
+	                .requestMatchers("/h2-console/**").permitAll() // Allow access to H2 Console
+	                .anyRequest().permitAll() // Allow all other requests for now (adjust as needed)
+	                // If you want all other requests to be authenticated:
+	                // .anyRequest().authenticated()
+	            );
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+	        return http.build();
+	    }
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-    
+	  @Bean
+	    public CorsConfigurationSource corsConfigurationSource() {
+	        CorsConfiguration configuration = new CorsConfiguration();
+	        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Your frontend origin
+	        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Include OPTIONS
+	        configuration.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
+	        configuration.setAllowCredentials(true);
+	        configuration.setMaxAge(3600L); // How long the preflight response can be cached
+	        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	        source.registerCorsConfiguration("/**", configuration); // Apply to all paths
+	        return source;
+	    }
 }

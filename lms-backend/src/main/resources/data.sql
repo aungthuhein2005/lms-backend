@@ -9,11 +9,26 @@ VALUES ('Aye Myat Aung', 'Chanmyathazi', '0978732830', 'ayemyataung@gmail.com', 
 INSERT INTO users (name, address, phone, email, profile, password, role,gender,dob)
 VALUES ('Myat Thiri Wai', 'Chanmyathazi', '09755774563', 'myatthiriwai@gmail.com', 'default.png', 'fdfdfdg', 'USER','FEMALE','2009-05-14');
 
+
+INSERT INTO teachers (user_id,hire_date,deleted) VALUES (1,'2024-09-22',false);
+
 -- Insert students (linked to users)
-INSERT INTO students (id, user_id, deleted)
+INSERT INTO students (user_id, enroll_date, deleted)
 VALUES
-(1, 1, false),
-(2, 2, false);
+(1, '2024-09-01', false),
+(2, '2024-09-01', false);
+
+-- Academic Years (assuming already inserted)
+INSERT INTO academic_year (id, name, start_date, end_date) VALUES (1, '2024-2025', '2024-06-01', '2025-05-31');
+
+-- Semesters for academic year 1
+INSERT INTO semester (id, name, start_date, end_date, academic_year_id) VALUES
+(1, 'Semester 1', '2024-06-01', '2024-11-30', 1),
+(2, 'Semester 2', '2024-12-01', '2025-05-31', 1);
+
+-- You can add more semesters for other academic years if needed
+
+
 
 -- Insert into Course table
 INSERT INTO course (id, title, description) VALUES 
@@ -28,10 +43,8 @@ INSERT INTO module (id, name, description, exam_id, assignment_id, course_id) VA
 (4, 'JavaScript', 'DOM, ES6, and event handling.', 104, 204, 2);
 
 -- Insert into Lesson table
-INSERT INTO lesson (id, title, media, exam_id, assignment_id, module_id) VALUES 
-(1, 'Introduction to Java', 'video1.mp4', 101, 201, 1),
-(2, 'OOP Concepts', 'video2.mp4', 101, 201, 1),
-(3, 'Working with Threads', 'video3.mp4', 102, 202, 2),
-(4, 'HTML Structure', 'video4.mp4', 103, 203, 3),
-(5, 'CSS Styling', 'video5.mp4', 103, 203, 3),
-(6, 'DOM Manipulation', 'video6.mp4', 104, 204, 4);
+INSERT INTO classes (id, name, description) VALUES
+(1, 'class 1', 'description'),
+(2, 'class 2', 'description');
+
+
