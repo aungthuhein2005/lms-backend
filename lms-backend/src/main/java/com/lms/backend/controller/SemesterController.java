@@ -42,7 +42,6 @@ public class SemesterController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    // Update existing semester
     @PutMapping("/{id}")
     public ResponseEntity<Semester> updateSemester(@PathVariable int id, @RequestBody SemesterRequest request) {
         request.setId(id); // Ensure the ID in request is set
