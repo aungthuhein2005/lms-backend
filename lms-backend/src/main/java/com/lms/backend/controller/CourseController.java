@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.lms.backend.dto.CourseDTO;
 import com.lms.backend.entity.Course;
 import com.lms.backend.entity.Module;
 import com.lms.backend.repository.CourseRepository;
@@ -46,6 +48,11 @@ public class CourseController {
 		return courseService.getAllCourses();
 	}
 	
+	 @GetMapping("/teacher/{teacherId}")
+	    public List<Course> getCoursesByTeacherId(@PathVariable int teacherId) {
+	        return courseService.getCourseByTeacherId(teacherId);
+	    }
+	
 	@GetMapping("/title/{title}")
 	public ResponseEntity<Course> getCourseByName(@PathVariable String title){
 		Optional<Course> course = courseService.getCourseByTitle(title);
@@ -66,7 +73,7 @@ public class CourseController {
 	}
 	
 	@PostMapping("/create")
-	public Course createCourse(@RequestBody Course course) {
+	public Course createCourse(@RequestBody CourseDTO course) {
 		return courseService.createCourse(course);
 	}
 	
@@ -81,4 +88,7 @@ public class CourseController {
 		courseService.deleteCourse(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	
+
 }

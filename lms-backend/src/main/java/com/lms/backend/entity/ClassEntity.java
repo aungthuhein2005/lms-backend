@@ -1,8 +1,13 @@
 package com.lms.backend.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,17 +34,21 @@ public class ClassEntity {
   
   private String schedule;
   
-  @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Enrollment> studentClasses = new HashSet<>();
-
-  
   @ManyToOne
   @JoinColumn(name = "teacher_id")
   private Teacher teacher;
   
   
   @ManyToOne
-  @JoinColumn(name = "semester_id")
+  @JoinColumn(name = "semester_id",nullable = false)
   private Semester semester;
+  
+  @ManyToOne
+  @JoinColumn(name = "course_id", nullable = false)
+  private Course course;
+
+  @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private List<ClassSchedule> schedules;
 
 }

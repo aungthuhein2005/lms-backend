@@ -3,6 +3,7 @@ package com.lms.backend.service;
 import com.lms.backend.dto.UserRequest;
 import com.lms.backend.entity.User;
 import com.lms.backend.repository.StudentRepository;
+import com.lms.backend.repository.TeacherRepository;
 import com.lms.backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -25,6 +26,9 @@ public class UserService {
 	private StudentRepository studentRepository;
 	
 	@Autowired
+	private TeacherRepository teacherRepository;
+	
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	
@@ -42,6 +46,7 @@ public class UserService {
 		String hashedPassword = passwordEncoder.encode(userRequest.getPassword());
 		user.setName(userRequest.getName());
 		user.setEmail(userRequest.getEmail());
+		user.setRole(userRequest.getRole());
 		user.setPassword(hashedPassword);
 		return userRepository.save(user);
 	}
@@ -49,6 +54,10 @@ public class UserService {
 	 public boolean hasStudentReference(int userId) {
 	        return studentRepository.existsByUserId(userId);
 	    }
+	 
+	 public boolean hasTeacherReference(int userId) {
+		 return teacherRepository.existsById(userId);
+	 }
 	 
 	 public boolean hasUser(int userId) {
 		 return userRepository.existsById(userId);
@@ -59,10 +68,18 @@ public class UserService {
 		userRepository.deleteById(id);
 	}
 	
-	@Transactional
-	 public void forceDeleteUserAndStudent(int userId) {
-	        studentRepository.deleteByUserId(userId); // Custom method in StudentRepository
-	        userRepository.deleteById(userId);
-	    }
+	 @Transactional
+	 public void forceDeleteUserAndReferences(int userId, boolean hasStudent, boolean hasTeacher) {
+	     if (hasStudent) {
+	         studentRepository.deleteByUserId(userId);
+	     }
+
+	     if (hasTeacher) {
+	         teacherRepository.deleteByUserId(userId);
+	     }
+
+	     userRepository.deleteById(userId);
+	 }
+
 	
 }

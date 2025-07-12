@@ -46,17 +46,17 @@ public class SemesterServiceImpl implements SemesterService {
     }
 
     @Override
-    public Semester updateSemester(SemesterRequest request) {
-        Semester semester = semesterRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Semester not found with id: " + request.getId()));
+    public Semester updateSemester(int id,SemesterRequest request) {
+        Semester semester = semesterRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Semester not found with id: " + id));
 
         semester.setName(request.getName());
-        semester.setStartDate(request.getStartDate());
-        semester.setEndDate(request.getEndDate());
+        semester.setStartDate(request.getStart_date());
+        semester.setEndDate(request.getEnd_date());
 
-        if (request.getAcademicYearId() != null) {
-        	AcademicYear academicYear = academicYearRepository.findById(request.getAcademicYearId())
-        		    .orElseThrow(() -> new RuntimeException("AcademicYear not found with id: " + request.getAcademicYearId()));
+        if (request.getAcademic_year_id() != null) {
+        	AcademicYear academicYear = academicYearRepository.findById(request.getAcademic_year_id())
+        		    .orElseThrow(() -> new RuntimeException("AcademicYear not found with id: " + request.getAcademic_year_id()));
 
             semester.setAcademicYear(academicYear);
         }
@@ -68,17 +68,24 @@ public class SemesterServiceImpl implements SemesterService {
     public Semester createSemester(SemesterRequest request) {
         Semester semester = new Semester();
         semester.setName(request.getName());
-        semester.setStartDate(request.getStartDate());
-        semester.setEndDate(request.getEndDate());
+        semester.setStartDate(request.getStart_date());
+        semester.setEndDate(request.getEnd_date());
 
-        if (request.getAcademicYearId() != null) {
-            AcademicYear academicYear = academicYearRepository.findById(request.getAcademicYearId())
-                    .orElseThrow(() -> new RuntimeException("Academic Year not found with id: " + request.getAcademicYearId()));
+        if (request.getAcademic_year_id() != null) {
+            AcademicYear academicYear = academicYearRepository.findById(request.getAcademic_year_id())
+                    .orElseThrow(() -> new RuntimeException("Academic Year not found with id: " + request.getAcademic_year_id()));
             semester.setAcademicYear(academicYear);
         }
 
         return semesterRepository.save(semester);
     }
+
+	@Override
+	public List<Semester> getSemestersByAcademicYear(int yearId) {
+		// TODO Auto-generated method stub
+		List<Semester> semesters = semesterRepository.findByAcademicYear_Id(yearId);
+		return semesters;
+	}
 
 
 }

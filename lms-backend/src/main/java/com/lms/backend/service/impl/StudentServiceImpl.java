@@ -37,11 +37,11 @@ public class StudentServiceImpl implements StudentService{
 
 
 	@Override
-	public StudentDTO getStudentById(int id) {
+	public Student getStudentById(int id) {
 		// TODO Auto-generated method stub
 		Student student = studentRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Student not found"));
-		return DtoConverter.convertToStudentDTO(student);
+		return student;
 		
 	}
 

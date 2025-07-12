@@ -10,5 +10,6 @@ public interface SemesterService {
 	Semester createSemester(SemesterRequest request);
 	Semester getSemesterById(int id);
 	void deleteSemester(int id);
-	Semester updateSemester(SemesterRequest request);
+	Semester updateSemester(int id,SemesterRequest request);
+	List<Semester> getSemestersByAcademicYear(int yearId);
 }

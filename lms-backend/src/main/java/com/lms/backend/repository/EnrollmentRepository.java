@@ -12,6 +12,7 @@ import com.lms.backend.entity.Enrollment;
 public interface EnrollmentRepository extends CrudRepository<Enrollment, Integer> {
 	@Query("SELECT sc.classEntity FROM Enrollment sc WHERE sc.student.id = :studentId")
 	List<ClassEntity> findClassesByStudentId(@Param("studentId") int studentId);
-
+	List<Enrollment> findByStudentId(int studentId);
+	List<Enrollment> findByClassEntityId(Integer classId);
 
 }

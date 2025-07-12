@@ -1,5 +1,6 @@
 package com.lms.backend.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.Data;
@@ -7,7 +8,7 @@ import lombok.Data;
 @Data
 public class TeacherRequest {
 	
+	private String name;
 	private int userId;
-	private Date hireDate; 
-
+	private LocalDate hireDate; 
 }

@@ -21,6 +21,8 @@ public class AcademicYearController {
 
     @PostMapping
     public ResponseEntity<AcademicYear> create(@RequestBody AcademicYearRequest request) {
+    	System.out.println(request.getStartDate());
+    	System.out.println(request.getEndDate());
         AcademicYear year = academicYearService.createAcademicYear(request);
         return ResponseEntity.ok(year);
     }

@@ -58,7 +58,7 @@ public class StudentController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<StudentDTO> getStudentById(@PathVariable int id){
+	public ResponseEntity<Student> getStudentById(@PathVariable int id){
 		return ResponseEntity.ok(studentServiceImpl.getStudentById(id));
 	}
 	
@@ -91,13 +91,13 @@ public class StudentController {
 	}
 	
 	@PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(
+    public ResponseEntity<?> updateStudent(
             @PathVariable int id,
             @RequestBody StudentUpdateRequest request
     ) {
         try {
             Student updatedStudent = studentServiceImpl.updateStudent(id, request);
-            return ResponseEntity.ok(updatedStudent);
+            return ResponseEntity.ok().body(Map.of("message","Updgate Success","student",updatedStudent));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null); // Or return a custom error response
         }

@@ -24,6 +24,8 @@ public class AcademicYearServiceImpl implements AcademicYearService {
     public AcademicYear createAcademicYear(AcademicYearRequest request) {
         AcademicYear year = new AcademicYear();
         year.setName(request.getName());
+        year.setStartDate(request.getStartDate());
+        year.setEndDate(request.getEndDate());
         return academicYearRepository.save(year);
     }
 

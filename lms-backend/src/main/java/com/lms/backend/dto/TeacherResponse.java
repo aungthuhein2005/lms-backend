@@ -1,5 +1,6 @@
 package com.lms.backend.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.lms.backend.entity.Teacher;
@@ -10,7 +11,7 @@ import lombok.Data;
 public class TeacherResponse {
 	private int id;
 	private String name;
-	private Date hireDate;
+	private LocalDate hireDate;
 	private boolean deleted;
 	
 	public TeacherResponse(Teacher teacher) {

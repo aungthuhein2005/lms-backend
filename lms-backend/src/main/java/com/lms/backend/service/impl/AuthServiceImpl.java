@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService{
 		userRepository.save(user);
 		String token = jwtService.generateToken(user);
 		
-		return new AuthResponse(token,user);
+		return new AuthResponse(token,user,null);
 	}
 
 	@Override
@@ -55,8 +55,14 @@ public class AuthServiceImpl implements AuthService{
 		}
 		
 		String token = jwtService.generateToken(user);
-	System.out.print(user);
-		return new AuthResponse(token,user);
+		 Integer roleId = null;
+		    switch (user.getRole()) {
+		        case "STUDENT" -> roleId = user.getStudent() != null ? user.getStudent().getId() : null;
+		        case "TEACHER" -> roleId = user.getTeacher() != null ? user.getTeacher().getId() : null;
+		        case "ADMIN" -> roleId = user.getAdmin() != null ? user.getAdmin().getId() : null;
+		    }
+
+		return new AuthResponse(token,user,roleId);
 	}
 
 	@Override

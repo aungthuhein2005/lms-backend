@@ -3,6 +3,9 @@ package com.lms.backend.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,8 +30,10 @@ public class Semester {
 
     @ManyToOne
     @JoinColumn(name = "academic_year_id")
+//    @JsonBackReference
     private AcademicYear academicYear;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "semester", cascade = CascadeType.ALL)
     private List<ClassEntity> classes;
 }

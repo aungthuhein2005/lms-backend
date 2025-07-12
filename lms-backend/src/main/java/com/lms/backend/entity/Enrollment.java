@@ -2,6 +2,8 @@ package com.lms.backend.entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +25,7 @@ public class Enrollment {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="student_id",nullable = false)
+	
 	private Student student;
 	
 	@ManyToOne

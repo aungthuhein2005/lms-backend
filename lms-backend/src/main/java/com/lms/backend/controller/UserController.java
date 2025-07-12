@@ -53,17 +53,27 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> checkUserDependencies(@PathVariable int id) {
         boolean hasStudent = userService.hasStudentReference(id);
-        if (hasStudent) {
+        boolean hasTeacher = userService.hasTeacherReference(id); 
+
+        if (hasStudent || hasTeacher) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-            		.body(Map.of("message","User is referenced as a student. Do you want to delete all related data?"));
+                .body(Map.of("message", "User is referenced as " +
+                    (hasStudent ? "a student" : "") +
+                    (hasStudent && hasTeacher ? " and " : "") +
+                    (hasTeacher ? "a teacher" : "") +
+                    ". Do you want to delete all related data?"));
         }
+
         userService.deleteUser(id);
-        return ResponseEntity.ok(Map.of("message","User deleted successfully."));
+        return ResponseEntity.ok(Map.of("message", "User deleted successfully."));
     }
+
 
     @DeleteMapping("/{id}/force")
     public ResponseEntity<?> forceDelete(@PathVariable int id) {
-        userService.forceDeleteUserAndStudent(id);
+    	  boolean hasStudent = userService.hasStudentReference(id);
+          boolean hasTeacher = userService.hasTeacherReference(id); 
+          userService.forceDeleteUserAndReferences(id, hasStudent, hasTeacher);
         return ResponseEntity.ok(Map.of("message","User and related student data deleted successfully."));
     }
 

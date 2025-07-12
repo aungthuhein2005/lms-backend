@@ -10,7 +10,7 @@ import com.lms.backend.entity.Student;
 public interface StudentService {
 
 	List<StudentDTO> getAllStudents();
-	StudentDTO getStudentById(int id);
+	Student getStudentById(int id);
 	void softDeleteById(int id);
 	void restoreById(int id);
 	Student createStudent(StudentRequest request);

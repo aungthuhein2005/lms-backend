@@ -1,5 +1,6 @@
 package com.lms.backend.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.*;
@@ -19,7 +20,7 @@ public class Teacher {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
-
-   private Date hire_date;
+    
+   private LocalDate hire_date;
    private boolean deleted;
 }

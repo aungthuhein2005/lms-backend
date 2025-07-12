@@ -3,6 +3,8 @@ package com.lms.backend.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +25,7 @@ public class AcademicYear {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "academicYear", cascade = CascadeType.ALL)
     private List<Semester> semesters;
 }
