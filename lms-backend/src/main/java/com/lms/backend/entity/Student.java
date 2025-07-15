@@ -2,6 +2,7 @@ package com.lms.backend.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,5 +44,11 @@ public class Student {
 
     
     private boolean deleted;
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
     
 }

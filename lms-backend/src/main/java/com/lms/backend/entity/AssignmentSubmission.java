@@ -24,6 +24,8 @@ public class AssignmentSubmission {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
+    
+    private int score;
 
     private String submittedFile;
     private LocalDateTime submittedAt;

@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lms.backend.dto.ClassDTO;
+import com.lms.backend.dto.ClassScheduleDTO;
 import com.lms.backend.dto.EnrollmentRequest;
 import com.lms.backend.dto.StudentDTO;
+import com.lms.backend.dto.StudentEnrollDTO;
 import com.lms.backend.dto.StudentRequest;
 import com.lms.backend.entity.ClassEntity;
+import com.lms.backend.entity.ClassSchedule;
 import com.lms.backend.entity.Student;
 import com.lms.backend.service.StudentUpdateRequest;
 import com.lms.backend.service.UserService;
@@ -102,4 +105,27 @@ public class StudentController {
             return ResponseEntity.badRequest().body(null); // Or return a custom error response
         }
     }
+	
+	@PutMapping("enroll/{id}")
+    public ResponseEntity<?> enrollStudent(
+            @PathVariable int id,
+            @RequestBody StudentEnrollDTO request
+    ) {
+        try {
+            Student updatedStudent = studentServiceImpl.enrollStudent(id, request);
+            return ResponseEntity.ok().body(Map.of("message","Updgate Success","student",updatedStudent));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null); // Or return a custom error response
+        }
+    }
+	
+	@GetMapping("{id}/schedule")
+	public ResponseEntity<?> getScheduel(@PathVariable int id){
+		try {
+            List<ClassScheduleDTO> schedules = studentServiceImpl.getSchedule(id);
+            return ResponseEntity.ok().body(Map.of("message","Success","schedules",schedules));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null); 
+        }
+	}
 }

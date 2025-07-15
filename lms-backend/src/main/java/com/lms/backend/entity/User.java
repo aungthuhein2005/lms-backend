@@ -2,6 +2,7 @@ package com.lms.backend.entity;
 
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -63,7 +64,11 @@ public class User  {
     @JsonIgnore
     private Admin admin;
 
-	
-    
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	    
     
 }

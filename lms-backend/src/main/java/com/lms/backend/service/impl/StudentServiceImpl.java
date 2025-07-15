@@ -1,16 +1,27 @@
 package com.lms.backend.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lms.backend.dto.ClassScheduleDTO;
 import com.lms.backend.dto.StudentDTO;
+import com.lms.backend.dto.StudentEnrollDTO;
 import com.lms.backend.dto.StudentRequest;
+import com.lms.backend.entity.ClassEntity;
+import com.lms.backend.entity.ClassSchedule;
+import com.lms.backend.entity.Enrollment;
 import com.lms.backend.entity.Student;
+import com.lms.backend.entity.Teacher;
 import com.lms.backend.entity.User;
+import com.lms.backend.repository.ClassRepository;
+import com.lms.backend.repository.EnrollmentRepository;
 import com.lms.backend.repository.StudentRepository;
 import com.lms.backend.repository.UserRepository;
 import com.lms.backend.service.StudentService;
@@ -27,6 +38,9 @@ public class StudentServiceImpl implements StudentService{
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired EnrollmentRepository enrollmentRepository;
+	@Autowired ClassRepository classRepository;
 	
 	@Override
 	public List<StudentDTO> getAllStudents() {
@@ -83,7 +97,7 @@ public class StudentServiceImpl implements StudentService{
 
 
 	@Override
-	public Student updateStudent(int id, StudentUpdateRequest request) {
+	public Student enrollStudent(int id, StudentEnrollDTO request) {
 	    Optional<Student> optionalStudent = studentRepository.findById(id);
 //	    Optional<User> optionalUser = userRepository.findById(request.getUserId());
 	    
@@ -106,6 +120,54 @@ public class StudentServiceImpl implements StudentService{
 
 	    return studentRepository.save(student);
 	}
+
+
+
+	@Override
+	public Student updateStudent(int id, StudentUpdateRequest request) {
+		// TODO Auto-generated method stub
+		Student student = studentRepository.findById(id).orElseThrow();
+	    Optional<User> optionalUser = userRepository.findById(student.getUser().getId());
+	    User user = optionalUser.get();
+	    user.setName(request.getName());
+	    user.setAddress(request.getAddress());
+	    user.setEmail(request.getEmail());
+	    user.setDob(request.getDob());
+	    user.setGender(request.getGender());
+	    user.setPhone(request.getPhone());
+	    user.setProfile(request.getProfile());
+	    userRepository.save(user);
+		return student;
+	}
+
+
+	@Override
+	public List<ClassScheduleDTO> getSchedule(int studentId) {
+	    List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId);
+
+	    // Group by classId
+	    Map<Integer, ClassScheduleDTO> dtoMap = new LinkedHashMap<>();
+
+	    for (Enrollment enrollment : enrollments) {
+	        ClassEntity classEntity = enrollment.getClassEntity();
+	        int classId = classEntity.getId();
+
+	        ClassScheduleDTO dto = dtoMap.computeIfAbsent(classId, id -> {
+	            ClassScheduleDTO newDto = new ClassScheduleDTO();
+	            newDto.setClassId(classId);
+	            newDto.setClassName(classEntity.getName());
+	            newDto.setSchedules(new ArrayList<>());
+	            return newDto;
+	        });
+
+	        dto.getSchedules().addAll(classEntity.getSchedules());
+	    }
+
+	    return new ArrayList<>(dtoMap.values());
+	}
+
+
+
 
 
 }

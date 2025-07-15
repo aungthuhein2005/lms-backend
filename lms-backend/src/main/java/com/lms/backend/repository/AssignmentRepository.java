@@ -12,4 +12,5 @@ import com.lms.backend.entity.Assignment;
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Integer> {
 	List<Assignment> findByClassEntity_IdIn(List<Integer> classIds);
+	List<Assignment> findByTeacherId(int teacherId);
 }

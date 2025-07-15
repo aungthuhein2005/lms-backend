@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lms.backend.dto.AssignmentCreateDTO;
 import com.lms.backend.dto.AssignmentSubmissionDTO;
+import com.lms.backend.dto.AssignmentWithStatusDTO;
 import com.lms.backend.entity.Assignment;
 import com.lms.backend.entity.AssignmentSubmission;
 import com.lms.backend.service.AssignmentService;
@@ -37,13 +38,18 @@ public class AssignmentController {
     
     @GetMapping("/teacher/{teacherId}")
     public List<Assignment> getByTeacher(@PathVariable int teacherId) {
-        return assignmentService.getAssignmentsByclass(teacherId);
+        return assignmentService.getAssignmentsByteacher(teacherId);
     }
 
-    @PostMapping("/{assignmentId}/submit/{studentId}")
-    public AssignmentSubmission submit(@PathVariable int assignmentId, @PathVariable int studentId, @RequestBody Map<String, String> body) {
-        return assignmentService.submitAssignment(assignmentId, studentId, body.get("fileUrl"));
+    @PostMapping("/submit")
+    public AssignmentSubmission submit(@RequestBody Map<String, String> body) {
+        int assignmentId = Integer.parseInt(body.get("assignmentId"));
+        int studentId = Integer.parseInt(body.get("studentId"));
+        String fileUrl = body.get("fileUrl");
+
+        return assignmentService.submitAssignment(assignmentId, studentId, fileUrl);
     }
+
 
     @GetMapping("/{assignmentId}/submissions")
     public List<AssignmentSubmission> getSubmissions(@PathVariable int assignmentId) {
@@ -59,19 +65,18 @@ public class AssignmentController {
     }
     
     @GetMapping("/student/{studentId}")
-    public List<Assignment> getAssignmentsByStudentId(@PathVariable int studentId) {
+    public List<AssignmentWithStatusDTO> getAssignmentsByStudentId(@PathVariable int studentId) {
         return assignmentService.getAssignmentsByStudentId(studentId);
     }
 
+    @PatchMapping("submissions/{submissionId}/score")
+    public AssignmentSubmission updateScore(
+            @PathVariable Integer submissionId,
+            @RequestBody Map<String, Integer> body
+    ) {
+        Integer score = body.get("score");
+        return assignmentService.updateScore(submissionId, score);
+    }
     
-//    @PatchMapping("/submissions/{submissionId}/score")
-//    public ResponseEntity<AssignmentSubmission> updateScore(
-//            @PathVariable int submissionId,
-//            @RequestBody Map<String, Integer> body
-//    ) {
-//        AssignmentSubmission s = submissionRepo.findById(submissionId).orElseThrow();
-//        s.setScore(body.get("score"));
-//        return ResponseEntity.ok(submissionRepo.save(s));
-//    }
 
 }

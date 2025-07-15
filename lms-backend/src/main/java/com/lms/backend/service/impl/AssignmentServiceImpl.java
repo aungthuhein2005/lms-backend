@@ -3,6 +3,8 @@ package com.lms.backend.service.impl;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.lms.backend.dto.AssignmentCreateDTO;
 import com.lms.backend.dto.AssignmentSubmissionDTO;
+import com.lms.backend.dto.AssignmentWithStatusDTO;
 import com.lms.backend.entity.Assignment;
 import com.lms.backend.entity.AssignmentSubmission;
 import com.lms.backend.entity.ClassEntity;
@@ -65,13 +68,14 @@ public class AssignmentServiceImpl implements AssignmentService {
 		}
 
 	    public List<AssignmentSubmission> getSubmissionsByAssignment(int assignmentId) {
-	        return submissionRepo.findByAssignmentId(assignmentId);
+	    	System.out.println(assignmentId);
+	        return submissionRepo.findByAssignment_Id(assignmentId);
 	    }
 
 	    public AssignmentSubmission submitAssignment(int assignmentId, int studentId, String fileUrl) {
 	        AssignmentSubmission s = new AssignmentSubmission();
-	        s.setAssignment(assignmentRepo.findById(assignmentId).orElseThrow());
-	        s.setStudent(studentRepo.findById(studentId).orElseThrow());
+	        s.setAssignment(assignmentRepo.findById(assignmentId).orElseThrow(null));
+	        s.setStudent(studentRepo.findById(studentId).orElseThrow(null));
 	        s.setSubmittedFile(fileUrl);
 	        s.setSubmittedAt(LocalDateTime.now());
 	        return submissionRepo.save(s);
@@ -86,53 +90,73 @@ public class AssignmentServiceImpl implements AssignmentService {
 	            throw new AccessDeniedException("You are not allowed to view submissions for this assignment");
 	        }
 
-	        return submissionRepo.findByAssignmentId(assignmentId);
+	        return submissionRepo.findByAssignment_Id(assignmentId);
 	    }
-
-//	    public List<Assignment> getAssignmentsByStudentId(int studentId) {
-//	        Student student = studentRepo.findById(studentId)
-//	                .orElseThrow(() -> new RuntimeException("Student not found"));
-//
-//	        List<Integer> classIds = student.getStudentClasses().stream()
-//	                .map(enroll -> enroll.getClassEntity().getId())
-//	                .toList();
-//
-//	        List<Course> courses = StreamSupport.stream(classRepository.findAllById(classIds).spliterator(), false)
-//	                .map(ClassEntity::getCourse)
-//	                .toList();
-//
-//	        List<Integer> courseIds = courses.stream().map(Course::getId).toList();
-//	        List<Module> modules = moduleRepository.findByCourse_IdIn(courseIds);
-//
-//	        List<Integer> moduleIds = modules.stream().map(Module::getId).toList();
-//	        if (moduleIds.isEmpty()) return Collections.emptyList();
-//
-//	        List<Lesson> lessons = lessonRepository.findByModule_IdIn(moduleIds);
-//	        List<Integer> lessonIds = lessons.stream().map(Lesson::getId).toList();
-//	        if (lessonIds.isEmpty()) return Collections.emptyList();
-//
-//	        return assignmentRepo.findByLessonIdIn(lessonIds);
-//	    }
-
 
 
 		@Override
 		public List<Assignment> getAssignmentsByteacher(int teacherId) {
 			// TODO Auto-generated method stub
-			return null;
+			List<Assignment> assignementList = assignmentRepo.findByTeacherId(teacherId);
+			return assignementList;
+		}
+		
+		@Override
+		public List<AssignmentWithStatusDTO> getAssignmentsByStudentId(int studentId) {
+		    Student student = studentRepo.findById(studentId)
+		        .orElseThrow(() -> new RuntimeException("Student not found"));
+
+		    List<Integer> classIds = student.getStudentClasses().stream()
+		        .map(enroll -> enroll.getClassEntity().getId())
+		        .toList();
+
+		    if (classIds.isEmpty()) {
+		        return Collections.emptyList(); // No classes, so no assignments
+		    }
+
+		    List<Assignment> assignments = assignmentRepo.findByClassEntity_IdIn(classIds);
+
+		    // Get all submissions by this student
+		    List<AssignmentSubmission> submissions = submissionRepo.findByStudent_id(studentId);
+
+		    // Extract submitted assignment IDs
+		    Set<Integer> submittedAssignmentIds = submissions.stream()
+		        .map(sub -> sub.getAssignment().getId())
+		        .collect(Collectors.toSet());
+
+		    // Map assignments to DTO with status
+		    List<AssignmentWithStatusDTO> result = assignments.stream()
+		        .map(assignment -> {
+		            AssignmentWithStatusDTO dto = new AssignmentWithStatusDTO();
+		            dto.setId(assignment.getId());
+		            dto.setTitle(assignment.getTitle());
+		            dto.setDescription(assignment.getDescription());
+		            dto.setDueDate(assignment.getDueDate());
+		            dto.setPoint(assignment.getPoint());
+		            dto.setMedia(assignment.getMedia());
+		            dto.setClassname(assignment.getClassEntity().getName());
+		            dto.setTeacher(assignment.getTeacher().getUser().getName());
+		            dto.setStatus(submittedAssignmentIds.contains(assignment.getId()) ? "Submitted" : "Pending");
+		            return dto;
+		        })
+		        .collect(Collectors.toList());
+
+		    return result;
 		}
 
+
 		@Override
-		public List<Assignment> getAssignmentsByStudentId(int studentId) {
-			// TODO Auto-generated method stub
-		     Student student = studentRepo.findById(studentId)
-	                .orElseThrow(() -> new RuntimeException("Student not found"));
-		     List<Integer> classIds = student.getStudentClasses().stream()
-		                .map(enroll -> enroll.getClassEntity().getId())
-		                .toList();
-		     List<Assignment> assignments = assignmentRepo.findByClassEntity_IdIn(classIds);
-			return assignments;
+		public AssignmentSubmission updateScore(Integer submissionId, Integer score) {
+			Optional<AssignmentSubmission> optional = submissionRepo.findById(submissionId);
+	        if (optional.isEmpty()) {
+	            throw new IllegalArgumentException("Submission not found with ID: " + submissionId);
+	        }
+
+	        AssignmentSubmission submission = optional.get();
+	        submission.setScore(score);
+	        return submissionRepo.save(submission);
 		}
+
 
 
 
