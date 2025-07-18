@@ -1,0 +1,5 @@
+package com.lms.backend.repository;
+
+public interface StudentExamResultRepository {
+
+}

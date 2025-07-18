@@ -1,0 +1,6 @@
+package com.lms.backend.service;
+
+public interface StudentExamResultService {
+    List<StudentScoreDTO> getResultsByExamId(Integer examId);
+
+}

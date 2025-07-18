@@ -1,0 +1,35 @@
+package com.lms.backend.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.lms.backend.dto.StudentScoreDTO;
+import com.lms.backend.repository.StudentExamResultRepository;
+import com.lms.backend.service.StudentExamResultService;
+
+@Service
+public class StudentExamResultServiceImpl implements StudentExamResultService {
+
+    @Autowired
+    private StudentExamResultRepository resultRepository;
+
+    @Override
+    public List<StudentScoreDTO> getResultsByExamId(Integer examId) {
+        List<Map<String, Object>> rows = resultRepository.findResultsByExamId(examId);
+        List<StudentScoreDTO> result = new ArrayList<>();
+
+        for (Map<String, Object> row : rows) {
+            Integer studentId = (Integer) row.get("studentId");
+            Integer score = (Integer) row.get("score");
+
+            result.add(new StudentScoreDTO(studentId, studentName, score));
+        }
+        return result;
+    }
+
+}
+
