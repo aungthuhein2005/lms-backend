@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lms.backend.dto.AttendanceRequest;
 import com.lms.backend.entity.Attendance;
+import com.lms.backend.entity.Type;
 import com.lms.backend.repository.AttendanceRepository;
 import com.lms.backend.service.AttendanceService;
 
@@ -42,7 +43,13 @@ public class AttendanceController {
   public ResponseEntity<List<Attendance>> getAllAttendances() {
       return new ResponseEntity<>(attendanceService.getAllAttendances(), HttpStatus.OK);
   }
-
+  
+  
+  @GetMapping("/type/{type}")
+  public ResponseEntity<List<Attendance>> getTeachersAttendances(@PathVariable Type type) {
+	  System.out.println(type);
+      return new ResponseEntity<>(attendanceService.getAttendancesByTypes(type), HttpStatus.OK);
+  }
   
    @GetMapping("/{id}")
       public ResponseEntity<Attendance> getAttendanceById(@PathVariable Integer id) {
@@ -50,6 +57,7 @@ public class AttendanceController {
           return attendance.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                   .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
       }
+   
    @PostMapping
    public ResponseEntity<Attendance> createAttendance(@RequestBody AttendanceRequest attendanceRequest ) {
        Attendance createdAttendance = attendanceService.createAttendance(attendanceRequest);

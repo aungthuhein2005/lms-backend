@@ -23,11 +23,11 @@ public class LessonService {
         return lessonRepository.findByModuleId(moduleId);
     }
 
-    public Optional<Lesson> getLessonById(Integer id) {
+    public Optional<Lesson> getLessonById(Long id) {
         return lessonRepository.findById(id);
     }
 
-    public Lesson updateLesson(Integer id, Lesson updatedlesson) {
+    public Lesson updateLesson(Long id, Lesson updatedlesson) {
         Lesson lesson = lessonRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Lesson not found"));
         lesson.setTitle(updatedlesson.getTitle());
@@ -35,7 +35,7 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
-    public void deleteLesson(Integer id) {
+    public void deleteLesson(Long id) {
         lessonRepository.deleteById(id);
     }
 }

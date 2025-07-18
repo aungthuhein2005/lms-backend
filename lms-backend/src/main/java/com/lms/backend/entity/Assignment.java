@@ -1,5 +1,7 @@
 package com.lms.backend.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +18,7 @@ public class Assignment {
 
     private String title;
     private String description;
-    private String dueDate;
+    private LocalDate dueDate;
     private String media;
     private Integer point;
 

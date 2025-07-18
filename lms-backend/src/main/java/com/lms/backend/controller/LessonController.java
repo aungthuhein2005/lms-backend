@@ -36,19 +36,19 @@ public class LessonController {
 	    }
 
 	    @GetMapping("/{id}")
-	    public ResponseEntity<Lesson> getLesson(@PathVariable Integer id) {
+	    public ResponseEntity<Lesson> getLesson(@PathVariable Long id) {
 	        return lessonService.getLessonById(id)
 	                .map(ResponseEntity::ok)
 	                .orElse(ResponseEntity.notFound().build());
 	    }
 
 	    @PutMapping("/{id}")
-	    public Lesson updateLesson(@PathVariable Integer id, @RequestBody Lesson lesson) {
+	    public Lesson updateLesson(@PathVariable Long id, @RequestBody Lesson lesson) {
 	        return lessonService.updateLesson(id, lesson);
 	    }
 
 	    @DeleteMapping("/{id}")
-	    public ResponseEntity<Void> deleteLesson(@PathVariable Integer id) {
+	    public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
 	        lessonService.deleteLesson(id);
 	        return ResponseEntity.noContent().build();
 	    }

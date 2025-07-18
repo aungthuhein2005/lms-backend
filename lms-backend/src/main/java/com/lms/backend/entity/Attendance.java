@@ -23,8 +23,9 @@ public class Attendance {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   
-  @Column(name = "student_id")
-    private Integer studentId;
+  @ManyToOne
+  @JoinColumn(name="student_id")
+  private Student student;
 
   @ManyToOne
   @JoinColumn(name = "teacher_id") // this maps the FK column

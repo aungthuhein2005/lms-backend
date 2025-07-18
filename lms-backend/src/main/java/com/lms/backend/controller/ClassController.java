@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.lms.backend.dto.ClassCreateDTO;
 import com.lms.backend.dto.ClassDTO;
+import com.lms.backend.dto.ClassSummaryDTO;
 import com.lms.backend.dto.StudentDTO;
 import com.lms.backend.entity.ClassEntity;
 import com.lms.backend.entity.Student;
@@ -38,6 +39,11 @@ public class ClassController {
 	  List<ClassDTO> result = classes.stream().map(ClassDTO::new).collect(Collectors.toList());
       return ResponseEntity.ok(result);
     }
+  
+  @GetMapping("/{id}/summary")
+  public ResponseEntity<ClassSummaryDTO> getClassSummay(@PathVariable int id){
+	  return ResponseEntity.ok(classService.classSummary(id));
+  }
   
   @GetMapping("/viewClass/{name}")
     public ResponseEntity<ClassEntity> getClassByName(@PathVariable String name){

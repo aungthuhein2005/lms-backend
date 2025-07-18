@@ -16,18 +16,19 @@ import lombok.Data;
 @Entity
 @Data
 public class Question {
-  @Id
-  @GeneratedValue(strategy =  GenerationType.IDENTITY)
-  private int id;
-  private String questionText;
-  private String correctAnswer;
-  
-  @ElementCollection
-  private List<String> options = new ArrayList<>();
-  
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "exam_id")
-  private Exam exam;
-  
+	@Id
+	@GeneratedValue(strategy =  GenerationType.IDENTITY)
+	private int id;
+	private String questionText;
+	private int correctOption;
+	private int correctOptionIndex; 
+	
+	@ElementCollection
+	private List<String> options = new ArrayList<>();
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "exam_id")
+	private Exam exam;
+	
 
 }

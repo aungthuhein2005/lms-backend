@@ -1,0 +1,20 @@
+package com.lms.backend.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExamResultDTO {
+	private Integer studentId;
+	private Integer examId;
+    private int totalQuestions;
+    private int correctAnswers;
+    private int score;
+    private List<Integer> correctQuestionIds;
+    private List<SubmittedAnswerDTO> submittedAnswers;
+}

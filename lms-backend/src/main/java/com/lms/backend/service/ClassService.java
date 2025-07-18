@@ -5,24 +5,32 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.lms.backend.dto.ClassCreateDTO;
+import com.lms.backend.dto.ClassSummaryDTO;
 import com.lms.backend.entity.ClassEntity;
 import com.lms.backend.entity.ClassSchedule;
 import com.lms.backend.entity.Course;
 import com.lms.backend.entity.Enrollment;
+import com.lms.backend.entity.Lesson;
 import com.lms.backend.entity.Semester;
 import com.lms.backend.entity.Student;
 import com.lms.backend.entity.Teacher;
+import com.lms.backend.repository.AssignmentRepository;
 import com.lms.backend.repository.ClassRepository;
 import com.lms.backend.repository.CourseRepository;
 import com.lms.backend.repository.EnrollmentRepository;
+import com.lms.backend.repository.ExamRepository;
+import com.lms.backend.repository.LessonRepository;
 import com.lms.backend.repository.SemesterRepository;
+import com.lms.backend.repository.StudentCompletedLessonRepository;
 import com.lms.backend.repository.TeacherRepository;
 
 @Service
@@ -41,6 +49,11 @@ public class ClassService {
 	
 	@Autowired
 	private EnrollmentRepository enrollmentRepository;
+	
+	@Autowired private AssignmentRepository assignmentRepository;
+	@Autowired private ExamRepository examRepository;
+	@Autowired private LessonRepository lessonRepo;
+	@Autowired private StudentCompletedLessonRepository completedLessonRepo;
 
   
   public List<ClassEntity> getAllClasses(){
@@ -131,5 +144,44 @@ public class ClassService {
               .map(Enrollment::getClassEntity)
               .collect(Collectors.toList());
   }
+  
+  public double calculateClassProgress(int classId) {
+	    ClassEntity classEntity = classRepository.findById(classId)
+	        .orElseThrow(() -> new RuntimeException("Class not found"));
+
+	    Course course = classEntity.getCourse();
+	    List<Lesson> lessons = lessonRepo.findByCourseId(course.getId());
+
+	    List<Long> lessonIds = lessons.stream()
+	        .map(lesson -> lesson.getId().longValue())
+	        .collect(Collectors.toList());
+
+	    if (lessonIds.isEmpty()) return 0.0;
+
+	    Set<Integer> studentIds = enrollmentRepository.findByClassEntityId(classId).stream()
+	        .map(en -> en.getStudent().getId())
+	        .collect(Collectors.toSet());
+
+	    double totalProgress = 0.0;
+
+	    for (int studentId : studentIds) {
+	        long completed = completedLessonRepo.countCompletedLessonsByStudent(studentId, lessonIds);
+	        double studentProgress = ((double) completed / lessonIds.size()) * 100;
+	        totalProgress += studentProgress;
+	    }
+
+	    double avgProgress = studentIds.isEmpty() ? 0 : totalProgress / studentIds.size();
+	    return avgProgress;
+	}
+  
+  public ClassSummaryDTO classSummary(int classId) {
+	  int studentCount = enrollmentRepository.findByClassEntityId(classId).size();
+	  int assignmentCount = assignmentRepository.findByClassEntityId(classId).size();
+	  int examCount = examRepository.findByClassesId(classId).size();
+	  double classProgress = calculateClassProgress(classId);
+	  ClassSummaryDTO summary = new ClassSummaryDTO(studentCount,assignmentCount,examCount,classProgress);
+	  return summary;
+  }
+
 
 }
